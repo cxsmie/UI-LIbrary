@@ -481,6 +481,70 @@ function UILibrary.Load(GUITitle)
 			end)
 		end
 		
+		function PageLibrary.AddPlayerDropdown(Text, Callback)
+			local DropdownArray = ConfigurationArray or {}
+			
+			local DropdownToggle = false
+			
+			local DropdownContainer = Frame()
+			DropdownContainer.Size = UDim2.new(1,0,0,20)
+			DropdownContainer.Name = Text.."DROPDOWN"
+			DropdownContainer.BackgroundTransparency = 1
+			DropdownContainer.Parent = DisplayPage
+			
+			local DropdownForeground = RoundBox(5)
+			DropdownForeground.ClipsDescendants = true
+			DropdownForeground.ImageColor3 = Color3.fromRGB(35,35,35)
+			DropdownForeground.Size = UDim2.new(1,0,1,0)
+			DropdownForeground.Parent = DropdownContainer
+			
+			local DropdownExpander = DropdownIcon(true)
+			DropdownExpander.Parent = DropdownForeground
+			
+			local DropdownLabel = TextLabel(Text, 12)
+			DropdownLabel.Size = UDim2.new(1,0,0,20)
+			DropdownLabel.Parent = DropdownForeground
+			
+			local DropdownFrame = Frame()
+			DropdownFrame.Position = UDim2.new(0,0,0,20)
+			DropdownFrame.BackgroundTransparency = 1
+			DropdownFrame.Size = UDim2.new(1,0,0,#DropdownArray*20)
+			DropdownFrame.Parent = DropdownForeground
+			
+			local DropdownList = Instance.new("UIListLayout")
+			DropdownList.Parent = DropdownFrame
+			
+			for OptionIndex, Option in next, game.Players:GetPlayers() do
+				PageLibrary.AddButton(Option, function()
+					Callback(Option)
+					DropdownLabel.Text = Text..": "..Option
+				end, DropdownFrame, OptionIndex < #DropdownArray)
+			end
+			
+			spawn(function()
+			    game.Players.PlayerAdded:Connect(function(target_player)
+    				PageLibrary.AddButton(target_player.Name, function()
+    					Callback(target_player.Name)
+    					DropdownLabel.Text = Text..": "..target_player.Name
+    				end, DropdownFrame, #DropdownFrame:GetChildren() < #DropdownFrame:GetChildren())
+    			end)
+    			
+			    game.Players.PlayerAdded:Connect(function(target_player)
+			        for i, v in pairs(DropdownFrame:GetChildren()) do
+			            if v.Name == target_player.Name then
+			                v:Destroy()
+			            end
+			        end 
+    			end)
+    		end)
+			
+			DropdownExpander.MouseButton1Down:Connect(function()
+				DropdownToggle = not DropdownToggle
+				Tween(DropdownContainer, {Size = DropdownToggle and UDim2.new(1,0,0,20+(#DropdownArray*20)) or UDim2.new(1,0,0,20)})
+				Tween(DropdownExpander, {Rotation = DropdownToggle and 135 or 0})
+			end)
+		end
+		
 		function PageLibrary.AddColourPicker(Text, DefaultColour, Callback)
 			local DefaultColour = DefaultColour or Color3.fromRGB(255,255,255)
 			
