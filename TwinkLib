@@ -515,9 +515,9 @@ function UILibrary.Load(GUITitle)
 			DropdownList.Parent = DropdownFrame
 			
 			for OptionIndex, Option in next, game.Players:GetPlayers() do
-				PageLibrary.AddButton(Option.Name, function()
-					Callback(Option.Name)
-					DropdownLabel.Text = Text..": "..Option.Name
+				PageLibrary.AddButton(tostring(Option.Name), function()
+					Callback(tostring(Option.Name))
+					DropdownLabel.Text = Text..": "..tostring(Option.Name)
 				end, DropdownFrame, OptionIndex < #DropdownArray)
 			end
 			
