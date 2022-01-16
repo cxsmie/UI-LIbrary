@@ -482,7 +482,7 @@ function UILibrary.Load(GUITitle)
 		end
 		
 		function PageLibrary.AddPlayerDropdown(Text, Callback)
-			local DropdownArray = ConfigurationArray or {}
+			local DropdownArray = game.Players:GetPlayers()
 			
 			local DropdownToggle = false
 			
